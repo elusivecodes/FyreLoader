@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use
-    Fyre\Loader,
+    Fyre\Loader\Loader,
     PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase

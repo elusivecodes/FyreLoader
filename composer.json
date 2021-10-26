@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Fyre\\": "src/"
+            "Fyre\\Loader\\": "src/"
         }
     },
     "autoload-dev": {

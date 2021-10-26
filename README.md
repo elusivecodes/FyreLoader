@@ -20,7 +20,7 @@ composer install fyre/loader
 In PHP:
 
 ```php
-use Fyre\Loader;
+use Fyre\Loader\Loader;
 ```
 
 
