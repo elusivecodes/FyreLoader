@@ -5,6 +5,7 @@ namespace Tests;
 
 use
     Fyre\Loader\Loader,
+    Fyre\Utility\Path,
     PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase
@@ -78,7 +79,7 @@ final class LoaderTest extends TestCase
 
         $this->assertEquals(
             [
-                'src/'
+                Path::resolve('src')
             ],
             Loader::getNamespace('Fyre')
         );
@@ -93,7 +94,7 @@ final class LoaderTest extends TestCase
 
         $this->assertEquals(
             [
-                'tests/classes/Demo/'
+                Path::resolve('tests/classes/Demo')
             ],
             Loader::getNamespace('Demo')
         );

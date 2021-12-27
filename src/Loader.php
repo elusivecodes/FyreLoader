@@ -3,13 +3,15 @@ declare(strict_types=1);
 
 namespace Fyre\Loader;
 
+use
+    Fyre\Utility\Path;
+
 use const
     DIRECTORY_SEPARATOR;
 
 use function
     array_key_exists,
     array_merge,
-    is_array,
     is_file,
     in_array,
     rtrim,
@@ -51,12 +53,10 @@ abstract class Loader
     
             static::$namespaces[$prefix] ??= [];
     
-            if (!is_array($paths)) {
-                $paths = [$paths];
-            }
+            $paths = (array) $paths;
 
             foreach ($paths AS $path) {
-                $path = rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+                $path = Path::resolve($path);
 
                 if (in_array($path, static::$namespaces[$prefix])) {
                     continue;
@@ -171,10 +171,12 @@ abstract class Loader
             }
 
             $length = strlen($namespace);
+            $fileName = substr($class, $length);
+            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $fileName);
+            $fileName .= '.php';
+
             foreach ($paths AS $path) {
-                $file = substr($class, $length);
-                $file = str_replace('\\', DIRECTORY_SEPARATOR, $file);
-                $filePath = $path.$file.'.php';
+                $filePath = Path::join($path, $fileName);
 
                 if (static::loadFile($filePath)) {
                     return $filePath;
