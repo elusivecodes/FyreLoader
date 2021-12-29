@@ -17,8 +17,8 @@ use function
     rtrim,
     spl_autoload_register,
     str_replace,
+    str_starts_with,
     strlen,
-    strpos,
     substr;
 
 /**
@@ -166,7 +166,7 @@ abstract class Loader
     protected static function loadClass(string $class): string|bool
     {
         foreach (static::$namespaces AS $namespace => $paths) {
-            if (strpos($class, $namespace) !== 0) {
+            if (!str_starts_with($class, $namespace)) {
                 continue;
             }
 
