@@ -17,8 +17,7 @@ final class LoaderTest extends TestCase
             'Test' => 'tests/classes/test.php'
         ]);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             \Test::test()
         );
     }
@@ -29,8 +28,7 @@ final class LoaderTest extends TestCase
             'Demo' => 'tests/classes/Demo'
         ]);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             \Demo\Test::test()
         );
     }
@@ -41,8 +39,7 @@ final class LoaderTest extends TestCase
             'Demo' => 'tests/classes/Demo/'
         ]);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             \Demo\Test::test()
         );
     }
@@ -55,8 +52,7 @@ final class LoaderTest extends TestCase
             ]
         ]);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             \Demo\Test::test()
         );
     }
@@ -67,8 +63,7 @@ final class LoaderTest extends TestCase
             'Demo' => 'tests/classes/Demo'
         ]);
 
-        $this->assertEquals(
-            true,
+        $this->assertTrue(
             \Demo\Deep\Test::test()
         );
     }
@@ -77,7 +72,7 @@ final class LoaderTest extends TestCase
     {
         Loader::loadComposer('tests/Mock/autoload.php');
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 Path::resolve('src')
             ],
@@ -92,7 +87,7 @@ final class LoaderTest extends TestCase
             'Demo' => 'tests/classes/Demo'
         ]);
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 Path::resolve('tests/classes/Demo')
             ],
@@ -102,7 +97,7 @@ final class LoaderTest extends TestCase
 
     public function testGetNamespaceInvalid(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             [],
             Loader::getNamespace('Demo')
         );
@@ -116,7 +111,7 @@ final class LoaderTest extends TestCase
 
         Loader::removeNamespace('Demo');
 
-        $this->assertEquals(
+        $this->assertSame(
             [],
             Loader::getNamespace('Demo')
         );
@@ -126,7 +121,7 @@ final class LoaderTest extends TestCase
     {
         Loader::removeNamespace('Demo');
 
-        $this->assertEquals(
+        $this->assertSame(
             [],
             Loader::getNamespace('Demo')
         );
