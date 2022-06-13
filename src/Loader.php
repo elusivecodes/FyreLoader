@@ -14,12 +14,12 @@ use function
     array_merge,
     is_file,
     in_array,
-    rtrim,
     spl_autoload_register,
     str_replace,
     str_starts_with,
     strlen,
-    substr;
+    substr,
+    trim;
 
 /**
  * Loader
@@ -49,7 +49,7 @@ abstract class Loader
     public static function addNamespaces(array $namespaces): void
     {
         foreach ($namespaces AS $prefix => $paths) {
-            $prefix = static::formatPrefix($prefix);
+            $prefix = static::normalizeNamespace($prefix);
     
             static::$namespaces[$prefix] ??= [];
     
@@ -83,7 +83,7 @@ abstract class Loader
      */
     public static function getNamespace(string $prefix): array
     {
-        $prefix = static::formatPrefix($prefix);
+        $prefix = static::normalizeNamespace($prefix);
 
         return static::$namespaces[$prefix] ?? [];
     }
@@ -128,7 +128,7 @@ abstract class Loader
      */
     public static function removeNamespace(string $prefix): void
     {
-        $prefix = static::formatPrefix($prefix);
+        $prefix = static::normalizeNamespace($prefix);
 
         unset(static::$namespaces[$prefix]);
     }
@@ -146,16 +146,6 @@ abstract class Loader
         spl_autoload_unregister([static::class, 'loadClassFromMap']);
 
         static::$registered = false;
-    }
-
-    /**
-     * Format a namespace prefix.
-     * @param string $prefix The namespace prefix.
-     * @return string The formatted namespace prefix.
-     */
-    protected static function formatPrefix(string $prefix): string
-    {
-        return rtrim($prefix, '\\').'\\';
     }
 
     /**
@@ -215,6 +205,16 @@ abstract class Loader
         include_once $file;
 
         return $file;
+    }
+
+    /**
+     * Normalize a namespace
+     * @param string $namespace The namespace.
+     * @return string The normalized namespace.
+     */
+    protected static function normalizeNamespace(string $namespace): string
+    {
+        return trim($namespace, '\\').'\\';
     }
 
 }
