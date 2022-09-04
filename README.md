@@ -64,6 +64,16 @@ Get a namespace.
 $paths = Loader::getNamespace($namespace);
 ```
 
+**Get Namespace Paths**
+
+Get all paths for a namespace.
+
+- `$namespace` is a string representing the namespace prefix.
+
+```php
+$paths = Loader::getNamespacePaths($namespace);
+```
+
 **Load Composer**
 
 Load composer.

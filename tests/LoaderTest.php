@@ -14,7 +14,7 @@ final class LoaderTest extends TestCase
     public function testClassMap(): void
     {
         Loader::addClassMap([
-            'Test' => 'tests/classes/test.php'
+            'Test' => 'tests/classes/Test.php'
         ]);
 
         $this->assertTrue(
@@ -124,6 +124,27 @@ final class LoaderTest extends TestCase
         $this->assertSame(
             [],
             Loader::getNamespace('Demo')
+        );
+    }
+
+    public function testGetNamespacePaths(): void
+    {
+        Loader::addClassMap([
+            'Test\Example' => 'other/classes/Example.php',
+            'Test\Deep\Another' => 'files/Deep/Another.php'
+        ]);
+
+        Loader::addNamespaces([
+            'Test' => 'tests/'
+        ]);
+
+        $this->assertSame(
+            [
+                Path::resolve('tests'),
+                Path::resolve('other/classes'),
+                Path::resolve('files')
+            ],
+            Loader::getNamespacePaths('Test')
         );
     }
 

@@ -39,7 +39,12 @@ abstract class Loader
      */
     public static function addClassMap(array $classMap): void
     {
-        static::$classMap = array_merge(static::$classMap, $classMap);
+        foreach ($classMap AS $class => $path) {
+            $class = ltrim($class, '\\');
+            $path = Path::resolve($path);
+
+            static::$classMap[$class] = $path;
+        }
     }
 
     /**
@@ -89,6 +94,45 @@ abstract class Loader
     }
 
     /**
+     * Get all paths for a namespace.
+     * @param string $prefix The namespace prefix.
+     * @return array The namespace paths.
+     */
+    public static function getNamespacePaths(string $prefix): array
+    {
+        $prefix = static::normalizeNamespace($prefix);
+        $prefixLength = strlen($prefix);
+
+        $paths = static::$namespaces[$prefix] ?? [];
+
+        foreach (static::$classMap AS $className => $filePath) {
+            if (!str_starts_with($className, $prefix)) {
+                continue;
+            }
+
+            $classSuffix = substr($className, $prefixLength - 1);
+
+            $testPath = str_replace('\\', DIRECTORY_SEPARATOR, $classSuffix);
+            $testPath .= '.php';
+
+            if (!str_ends_with($filePath, $testPath)) {
+                continue;
+            }
+
+            $testPathLength = strlen($testPath);
+            $path = substr($filePath, 0, -$testPathLength);
+
+            if (in_array($path, $paths)) {
+                continue;
+            }
+
+            $paths[] = $path;
+        }
+
+        return $paths;
+    }
+
+    /**
      * Load composer.
      * @param string $composerPath The composer autload path.
      */
@@ -117,7 +161,6 @@ abstract class Loader
         }
 
         spl_autoload_register([static::class, 'loadClass'], true, true);
-        spl_autoload_register([static::class, 'loadClassFromMap'], true, true);
 
         static::$registered = true;
     }
@@ -143,7 +186,6 @@ abstract class Loader
         }
 
         spl_autoload_unregister([static::class, 'loadClass']);
-        spl_autoload_unregister([static::class, 'loadClassFromMap']);
 
         static::$registered = false;
     }
@@ -155,6 +197,10 @@ abstract class Loader
      */
     protected static function loadClass(string $class): string|bool
     {
+        if (static::loadClassFromMap($class)) {
+            return true;
+        }
+
         foreach (static::$namespaces AS $namespace => $paths) {
             if (!str_starts_with($class, $namespace)) {
                 continue;
