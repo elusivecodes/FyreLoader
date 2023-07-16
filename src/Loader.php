@@ -3,23 +3,20 @@ declare(strict_types=1);
 
 namespace Fyre\Loader;
 
-use
-    Fyre\Utility\Path;
+use Fyre\Utility\Path;
 
-use const
-    DIRECTORY_SEPARATOR;
+use const DIRECTORY_SEPARATOR;
 
-use function
-    array_key_exists,
-    array_merge,
-    is_file,
-    in_array,
-    spl_autoload_register,
-    str_replace,
-    str_starts_with,
-    strlen,
-    substr,
-    trim;
+use function array_key_exists;
+use function array_merge;
+use function is_file;
+use function in_array;
+use function spl_autoload_register;
+use function str_replace;
+use function str_starts_with;
+use function strlen;
+use function substr;
+use function trim;
 
 /**
  * Loader
@@ -39,11 +36,11 @@ abstract class Loader
      */
     public static function addClassMap(array $classMap): void
     {
-        foreach ($classMap AS $class => $path) {
-            $class = ltrim($class, '\\');
+        foreach ($classMap AS $className => $path) {
+            $className = static::normalizeClass($className);
             $path = Path::resolve($path);
 
-            static::$classMap[$class] = $path;
+            static::$classMap[$className] = $path;
         }
     }
 
@@ -79,6 +76,15 @@ abstract class Loader
     {
         static::$namespaces = [];
         static::$classMap = [];
+    }
+
+    /**
+     * Get the class map.
+     * @return array The class map.
+     */
+    public static function getClassMap(): array
+    {
+        return static::$classMap;
     }
 
     /**
@@ -133,6 +139,27 @@ abstract class Loader
     }
 
     /**
+     * Get the namespaces.
+     * @return array The namespaces.
+     */
+    public static function getNamespaces(): array
+    {
+        return static::$namespaces;
+    }
+
+    /**
+     * Determine if a namespace exists.
+     * @param string $prefix The namespace prefix.
+     * @return bool TRUE if the namespace exists, otherwise FALSE.
+     */
+    public static function hasNamespace(string $prefix): bool
+    {
+        $prefix = static::normalizeNamespace($prefix);
+
+        return array_key_exists($prefix, static::$namespaces);
+    }
+
+    /**
      * Load composer.
      * @param string $composerPath The composer autload path.
      */
@@ -166,14 +193,39 @@ abstract class Loader
     }
 
     /**
+     * Remove a class name.
+     * @param string $className The class name.
+     * @return bool TRUE if the class was removed, otherwise FALSE.
+     */
+    public static function removeClass(string $className): bool
+    {
+        $className = static::normalizeClass($className);
+
+        if (!array_key_exists($className, static::$classMap)) {
+            return false;
+        }
+
+        unset(static::$classMap[$className]);
+
+        return true;
+    }
+
+    /**
      * Remove a namespace.
      * @param string $prefix The namespace prefix.
+     * @return bool TRUE If the namespace was removed, otherwise FALSE.
      */
-    public static function removeNamespace(string $prefix): void
+    public static function removeNamespace(string $prefix): bool
     {
         $prefix = static::normalizeNamespace($prefix);
 
+        if (!array_key_exists($prefix, static::$namespaces)) {
+            return false;
+        }
+
         unset(static::$namespaces[$prefix]);
+
+        return true;
     }
 
     /**
@@ -201,12 +253,12 @@ abstract class Loader
             return true;
         }
 
-        foreach (static::$namespaces AS $namespace => $paths) {
-            if (!str_starts_with($class, $namespace)) {
+        foreach (static::$namespaces AS $prefix => $paths) {
+            if (!str_starts_with($class, $prefix)) {
                 continue;
             }
 
-            $length = strlen($namespace);
+            $length = strlen($prefix);
             $fileName = substr($class, $length);
             $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $fileName);
             $fileName .= '.php';
@@ -239,18 +291,28 @@ abstract class Loader
 
     /**
      * Attempt to load a file.
-     * @param string $file The file path.
+     * @param string $filePath The file path.
      * @return string|bool The file path, or FALSE if the file co uld not be loaded.
      */
-    protected static function loadFile(string $file): string|bool
+    protected static function loadFile(string $filePath): string|bool
     {
-        if (!is_file($file)) {
+        if (!is_file($filePath)) {
             return false;
         }
 
-        include_once $file;
+        include_once $filePath;
 
-        return $file;
+        return $filePath;
+    }
+
+    /**
+     * Normalize a class name
+     * @param string $className The class name.
+     * @return string The normalized class name.
+     */
+    protected static function normalizeClass(string $className): string
+    {
+        return ltrim($className, '\\');
     }
 
     /**

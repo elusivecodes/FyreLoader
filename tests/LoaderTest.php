@@ -3,10 +3,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use
-    Fyre\Loader\Loader,
-    Fyre\Utility\Path,
-    PHPUnit\Framework\TestCase;
+use Fyre\Loader\Loader;
+use Fyre\Utility\Path;
+use PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase
 {
@@ -14,11 +13,11 @@ final class LoaderTest extends TestCase
     public function testClassMap(): void
     {
         Loader::addClassMap([
-            'Test' => 'tests/classes/Test.php'
+            'TestClass' => 'tests/classes/TestClass.php'
         ]);
 
         $this->assertTrue(
-            \Test::test()
+            \TestClass::test()
         );
     }
 
@@ -29,7 +28,7 @@ final class LoaderTest extends TestCase
         ]);
 
         $this->assertTrue(
-            \Demo\Test::test()
+            \Demo\TestClass::test()
         );
     }
 
@@ -40,7 +39,7 @@ final class LoaderTest extends TestCase
         ]);
 
         $this->assertTrue(
-            \Demo\Test::test()
+            \Demo\TestClass::test()
         );
     }
 
@@ -53,7 +52,7 @@ final class LoaderTest extends TestCase
         ]);
 
         $this->assertTrue(
-            \Demo\Test::test()
+            \Demo\TestClass::test()
         );
     }
 
@@ -64,7 +63,7 @@ final class LoaderTest extends TestCase
         ]);
 
         $this->assertTrue(
-            \Demo\Deep\Test::test()
+            \Demo\Deep\TestClass::test()
         );
     }
 
@@ -77,6 +76,22 @@ final class LoaderTest extends TestCase
                 Path::resolve('src')
             ],
             Loader::getNamespace('Fyre')
+        );
+    }
+
+    public function testGetClassMap(): void
+    {
+        Loader::addClassMap([
+            'Test\Example' => 'other/classes/Example.php',
+            'Test\Deep\Another' => 'files/Deep/Another.php'
+        ]);
+
+        $this->assertSame(
+            [
+                'Test\Example' => Path::resolve('other/classes/Example.php'),
+                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php')
+            ],
+            Loader::getClassMap()
         );
     }
 
@@ -103,30 +118,6 @@ final class LoaderTest extends TestCase
         );
     }
 
-    public function testRemoveNamespace(): void
-    {
-        Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
-        ]);
-
-        Loader::removeNamespace('Demo');
-
-        $this->assertSame(
-            [],
-            Loader::getNamespace('Demo')
-        );
-    }
-
-    public function testRemoveNamespaceInvalid(): void
-    {
-        Loader::removeNamespace('Demo');
-
-        $this->assertSame(
-            [],
-            Loader::getNamespace('Demo')
-        );
-    }
-
     public function testGetNamespacePaths(): void
     {
         Loader::addClassMap([
@@ -145,6 +136,92 @@ final class LoaderTest extends TestCase
                 Path::resolve('files')
             ],
             Loader::getNamespacePaths('Test')
+        );
+    }
+
+    public function testGetNamespaces(): void
+    {
+        Loader::addNamespaces([
+            'Test' => 'tests/',
+            'Demo' => 'tests/classes/Demo'
+        ]);
+
+        $this->assertSame(
+            [
+                'Test\\' => [
+                    Path::resolve('tests')
+                ],
+                'Demo\\' => [
+                    Path::resolve('tests/classes/Demo')
+                ]
+            ],
+            Loader::getNamespaces()
+        );
+    }
+
+    public function testHasNamespace(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => 'tests/classes/Demo'
+        ]);
+
+        $this->assertTrue(
+            Loader::hasNamespace('Demo')
+        );
+    }
+
+    public function testHasNamespaceInvalid(): void
+    {
+        $this->assertFalse(
+            Loader::hasNamespace('Demo')
+        );
+    }
+
+    public function testRemoveClass(): void
+    {
+        Loader::addClassMap([
+            'Test\Example' => 'other/classes/Example.php',
+            'Test\Deep\Another' => 'files/Deep/Another.php'
+        ]);
+
+        $this->assertTrue(
+            Loader::removeClass('Test\Example')
+        );
+
+        $this->assertSame(
+            [
+                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php')
+            ],
+            Loader::getClassMap()
+        );
+    }
+
+    public function testRemoveClassInvalid(): void
+    {
+        $this->assertFalse(
+            Loader::removeClass('Test')
+        );
+    }
+
+    public function testRemoveNamespace(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => 'tests/classes/Demo'
+        ]);
+
+        $this->assertTrue(
+            Loader::removeNamespace('Demo')
+        );
+
+        $this->assertFalse(
+            Loader::hasNamespace('Demo')
+        );
+    }
+
+    public function testRemoveNamespaceInvalid(): void
+    {
+        $this->assertFalse(
+            Loader::removeNamespace('Demo')
         );
     }
 

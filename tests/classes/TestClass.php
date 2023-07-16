@@ -1,8 +1,6 @@
 <?php
 
-namespace Demo;
-
-class Test
+class TestClass
 {
 
     public static function test(): bool

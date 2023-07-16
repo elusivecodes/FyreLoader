@@ -1,6 +1,8 @@
 <?php
 
-class Test
+namespace Demo\Deep;
+
+class TestClass
 {
 
     public static function test(): bool

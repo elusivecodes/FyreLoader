@@ -1,6 +1,6 @@
 # FyreLoader
 
-**FyreLoader** is a free, autoloader library for *PHP*.
+**FyreLoader** is a free, open-source autoloader library for *PHP*.
 
 
 ## Table Of Contents
@@ -40,7 +40,7 @@ Loader::addClassMap($classMap);
 
 Add namespaces.
 
-- `$namespaces` is an array containing the namespaces where the key is the namespace and the value is the path.
+- `$namespaces` is an array containing the namespaces where the key is the namespace prefix and the value is the path.
 
 ```php
 Loader::addNamespaces($namespaces);
@@ -54,24 +54,50 @@ Clear the auto loader.
 Loader::clear();
 ```
 
+**Get Class Map**
+
+Get the class map.
+
+```php
+$classMap = Loader::getClassMap();
+```
+
 **Get Namespace**
 
 Get a namespace.
 
-- `$namespace` is a string representing the namespace prefix.
+- `$prefix` is a string representing the namespace prefix.
 
 ```php
-$paths = Loader::getNamespace($namespace);
+$paths = Loader::getNamespace($prefix);
 ```
 
 **Get Namespace Paths**
 
 Get all paths for a namespace.
 
-- `$namespace` is a string representing the namespace prefix.
+- `$prefix` is a string representing the namespace prefix.
 
 ```php
-$paths = Loader::getNamespacePaths($namespace);
+$paths = Loader::getNamespacePaths($prefix);
+```
+
+**Get Namespaces**
+
+Get the namespaces.
+
+```php
+$namespaces = Loader::getNamespaces();
+```
+
+**Has Namespace**
+
+Check if a namespace exists.
+
+- `$prefix` is a string representing the namespace prefix.
+
+```php
+$hasNamespace = Loader::hasNamespace($prefix);
 ```
 
 **Load Composer**
@@ -92,14 +118,24 @@ Register the autoloader.
 Loader::register();
 ```
 
+**Remove Class**
+
+Remove a class.
+
+- `$className` is a string representing the class name.
+
+```php
+$removed = Loader::removeClass($className);
+```
+
 **Remove Namespace**
 
 Remove a namespace.
 
-- `$namespace` is a string representing the namespace prefix.
+- `$prefix` is a string representing the namespace prefix.
 
 ```php
-Loader::removeNamespace($namespace);
+$removed = Loader::removeNamespace($prefix);
 ```
 
 **Unregister**
