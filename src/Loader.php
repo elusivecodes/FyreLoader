@@ -8,7 +8,6 @@ use Fyre\Utility\Path;
 use const DIRECTORY_SEPARATOR;
 
 use function array_key_exists;
-use function array_merge;
 use function is_file;
 use function in_array;
 use function spl_autoload_register;
