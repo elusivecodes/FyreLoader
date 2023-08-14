@@ -71,7 +71,7 @@ abstract class Loader
     /**
      * Clear the auto loader.
      */
-    public static function clear()
+    public static function clear(): void
     {
         static::$namespaces = [];
         static::$classMap = [];
