@@ -5,11 +5,9 @@ namespace Fyre\Loader;
 
 use Fyre\Utility\Path;
 
-use const DIRECTORY_SEPARATOR;
-
 use function array_key_exists;
-use function is_file;
 use function in_array;
+use function is_file;
 use function spl_autoload_register;
 use function str_replace;
 use function str_starts_with;
@@ -17,16 +15,15 @@ use function strlen;
 use function substr;
 use function trim;
 
+use const DIRECTORY_SEPARATOR;
+
 /**
  * Loader
  */
 abstract class Loader
 {
-
-    protected static array $namespaces = [];
-
     protected static array $classMap = [];
-
+    protected static array $namespaces = [];
     protected static bool $registered = false;
 
     /**
@@ -35,7 +32,7 @@ abstract class Loader
      */
     public static function addClassMap(array $classMap): void
     {
-        foreach ($classMap AS $className => $path) {
+        foreach ($classMap as $className => $path) {
             $className = static::normalizeClass($className);
             $path = Path::resolve($path);
 
@@ -49,14 +46,14 @@ abstract class Loader
      */
     public static function addNamespaces(array $namespaces): void
     {
-        foreach ($namespaces AS $prefix => $paths) {
+        foreach ($namespaces as $prefix => $paths) {
             $prefix = static::normalizeNamespace($prefix);
-    
+
             static::$namespaces[$prefix] ??= [];
-    
+
             $paths = (array) $paths;
 
-            foreach ($paths AS $path) {
+            foreach ($paths as $path) {
                 $path = Path::resolve($path);
 
                 if (in_array($path, static::$namespaces[$prefix])) {
@@ -110,7 +107,7 @@ abstract class Loader
 
         $paths = static::$namespaces[$prefix] ?? [];
 
-        foreach (static::$classMap AS $className => $filePath) {
+        foreach (static::$classMap as $className => $filePath) {
             if (!str_starts_with($className, $prefix)) {
                 continue;
             }
@@ -246,13 +243,13 @@ abstract class Loader
      * @param string $class The class name.
      * @return string|bool The file name, or FALSE if the class could not be loaded.
      */
-    protected static function loadClass(string $class): string|bool
+    protected static function loadClass(string $class): bool|string
     {
         if (static::loadClassFromMap($class)) {
             return true;
         }
 
-        foreach (static::$namespaces AS $prefix => $paths) {
+        foreach (static::$namespaces as $prefix => $paths) {
             if (!str_starts_with($class, $prefix)) {
                 continue;
             }
@@ -262,7 +259,7 @@ abstract class Loader
             $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $fileName);
             $fileName .= '.php';
 
-            foreach ($paths AS $path) {
+            foreach ($paths as $path) {
                 $filePath = Path::join($path, $fileName);
 
                 if (static::loadFile($filePath)) {
@@ -279,7 +276,7 @@ abstract class Loader
      * @param string $class The class name.
      * @return string|bool The file name, or FALSE if the class could not be loaded.
      */
-    protected static function loadClassFromMap(string $class): string|bool
+    protected static function loadClassFromMap(string $class): bool|string
     {
         if (!array_key_exists($class, static::$classMap)) {
             return false;
@@ -293,7 +290,7 @@ abstract class Loader
      * @param string $filePath The file path.
      * @return string|bool The file path, or FALSE if the file co uld not be loaded.
      */
-    protected static function loadFile(string $filePath): string|bool
+    protected static function loadFile(string $filePath): bool|string
     {
         if (!is_file($filePath)) {
             return false;
@@ -323,5 +320,4 @@ abstract class Loader
     {
         return trim($namespace, '\\').'\\';
     }
-
 }

@@ -9,6 +9,16 @@ use PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        Loader::register();
+    }
+
+    protected function tearDown(): void
+    {
+        Loader::clear();
+        Loader::unregister();
+    }
 
     public function testClassMap(): void
     {
@@ -18,64 +28,6 @@ final class LoaderTest extends TestCase
 
         $this->assertTrue(
             \TestClass::test()
-        );
-    }
-
-    public function testNamespace(): void
-    {
-        Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
-        ]);
-
-        $this->assertTrue(
-            \Demo\TestClass::test()
-        );
-    }
-
-    public function testNamespaceTrailingSlash(): void
-    {
-        Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo/'
-        ]);
-
-        $this->assertTrue(
-            \Demo\TestClass::test()
-        );
-    }
-
-    public function testNamespaceArray(): void
-    {
-        Loader::addNamespaces([
-            'Demo' => [
-                'tests/classes/Demo'
-            ]
-        ]);
-
-        $this->assertTrue(
-            \Demo\TestClass::test()
-        );
-    }
-
-    public function testNamespaceDeep(): void
-    {
-        Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
-        ]);
-
-        $this->assertTrue(
-            \Demo\Deep\TestClass::test()
-        );
-    }
-
-    public function testLoadComposer(): void
-    {
-        Loader::loadComposer('tests/Mock/autoload.php');
-
-        $this->assertSame(
-            [
-                Path::resolve('src')
-            ],
-            Loader::getNamespace('Fyre')
         );
     }
 
@@ -177,6 +129,64 @@ final class LoaderTest extends TestCase
         );
     }
 
+    public function testLoadComposer(): void
+    {
+        Loader::loadComposer('tests/Mock/autoload.php');
+
+        $this->assertSame(
+            [
+                Path::resolve('src')
+            ],
+            Loader::getNamespace('Fyre')
+        );
+    }
+
+    public function testNamespace(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => 'tests/classes/Demo'
+        ]);
+
+        $this->assertTrue(
+            \Demo\TestClass::test()
+        );
+    }
+
+    public function testNamespaceArray(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => [
+                'tests/classes/Demo'
+            ]
+        ]);
+
+        $this->assertTrue(
+            \Demo\TestClass::test()
+        );
+    }
+
+    public function testNamespaceDeep(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => 'tests/classes/Demo'
+        ]);
+
+        $this->assertTrue(
+            \Demo\Deep\TestClass::test()
+        );
+    }
+
+    public function testNamespaceTrailingSlash(): void
+    {
+        Loader::addNamespaces([
+            'Demo' => 'tests/classes/Demo/'
+        ]);
+
+        $this->assertTrue(
+            \Demo\TestClass::test()
+        );
+    }
+
     public function testRemoveClass(): void
     {
         Loader::addClassMap([
@@ -224,16 +234,4 @@ final class LoaderTest extends TestCase
             Loader::removeNamespace('Demo')
         );
     }
-
-    protected function setUp(): void
-    {
-        Loader::register();
-    }
-
-    protected function tearDown(): void
-    {
-        Loader::clear();
-        Loader::unregister();
-    }
-
 }

@@ -4,7 +4,6 @@ namespace Tests\Mock;
 
 class MockComposer
 {
-
     public function getClassMap(): array
     {
         return [];
@@ -16,7 +15,6 @@ class MockComposer
             'Fyre' => 'src/'
         ];
     }
-
 }
 
 return new MockComposer();
