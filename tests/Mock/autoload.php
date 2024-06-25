@@ -12,7 +12,7 @@ class MockComposer
     public function getPrefixesPsr4(): array
     {
         return [
-            'Fyre' => 'src/'
+            'Fyre' => 'src/',
         ];
     }
 }

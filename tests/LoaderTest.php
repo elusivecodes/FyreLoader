@@ -9,21 +9,10 @@ use PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        Loader::register();
-    }
-
-    protected function tearDown(): void
-    {
-        Loader::clear();
-        Loader::unregister();
-    }
-
     public function testClassMap(): void
     {
         Loader::addClassMap([
-            'TestClass' => 'tests/classes/TestClass.php'
+            'TestClass' => 'tests/classes/TestClass.php',
         ]);
 
         $this->assertTrue(
@@ -35,13 +24,13 @@ final class LoaderTest extends TestCase
     {
         Loader::addClassMap([
             'Test\Example' => 'other/classes/Example.php',
-            'Test\Deep\Another' => 'files/Deep/Another.php'
+            'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
         $this->assertSame(
             [
                 'Test\Example' => Path::resolve('other/classes/Example.php'),
-                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php')
+                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php'),
             ],
             Loader::getClassMap()
         );
@@ -51,12 +40,12 @@ final class LoaderTest extends TestCase
     {
         Loader::addNamespaces([
             'Test' => 'tests/',
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertSame(
             [
-                Path::resolve('tests/classes/Demo')
+                Path::resolve('tests/classes/Demo'),
             ],
             Loader::getNamespace('Demo')
         );
@@ -74,18 +63,18 @@ final class LoaderTest extends TestCase
     {
         Loader::addClassMap([
             'Test\Example' => 'other/classes/Example.php',
-            'Test\Deep\Another' => 'files/Deep/Another.php'
+            'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
         Loader::addNamespaces([
-            'Test' => 'tests/'
+            'Test' => 'tests/',
         ]);
 
         $this->assertSame(
             [
                 Path::resolve('tests'),
                 Path::resolve('other/classes'),
-                Path::resolve('files')
+                Path::resolve('files'),
             ],
             Loader::getNamespacePaths('Test')
         );
@@ -95,17 +84,17 @@ final class LoaderTest extends TestCase
     {
         Loader::addNamespaces([
             'Test' => 'tests/',
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertSame(
             [
                 'Test\\' => [
-                    Path::resolve('tests')
+                    Path::resolve('tests'),
                 ],
                 'Demo\\' => [
-                    Path::resolve('tests/classes/Demo')
-                ]
+                    Path::resolve('tests/classes/Demo'),
+                ],
             ],
             Loader::getNamespaces()
         );
@@ -114,7 +103,7 @@ final class LoaderTest extends TestCase
     public function testHasNamespace(): void
     {
         Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
@@ -135,7 +124,7 @@ final class LoaderTest extends TestCase
 
         $this->assertSame(
             [
-                Path::resolve('src')
+                Path::resolve('src'),
             ],
             Loader::getNamespace('Fyre')
         );
@@ -144,7 +133,7 @@ final class LoaderTest extends TestCase
     public function testNamespace(): void
     {
         Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
@@ -156,8 +145,8 @@ final class LoaderTest extends TestCase
     {
         Loader::addNamespaces([
             'Demo' => [
-                'tests/classes/Demo'
-            ]
+                'tests/classes/Demo',
+            ],
         ]);
 
         $this->assertTrue(
@@ -168,7 +157,7 @@ final class LoaderTest extends TestCase
     public function testNamespaceDeep(): void
     {
         Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
@@ -179,7 +168,7 @@ final class LoaderTest extends TestCase
     public function testNamespaceTrailingSlash(): void
     {
         Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo/'
+            'Demo' => 'tests/classes/Demo/',
         ]);
 
         $this->assertTrue(
@@ -191,7 +180,7 @@ final class LoaderTest extends TestCase
     {
         Loader::addClassMap([
             'Test\Example' => 'other/classes/Example.php',
-            'Test\Deep\Another' => 'files/Deep/Another.php'
+            'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
         $this->assertTrue(
@@ -200,7 +189,7 @@ final class LoaderTest extends TestCase
 
         $this->assertSame(
             [
-                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php')
+                'Test\Deep\Another' => Path::resolve('files/Deep/Another.php'),
             ],
             Loader::getClassMap()
         );
@@ -216,7 +205,7 @@ final class LoaderTest extends TestCase
     public function testRemoveNamespace(): void
     {
         Loader::addNamespaces([
-            'Demo' => 'tests/classes/Demo'
+            'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
@@ -233,5 +222,16 @@ final class LoaderTest extends TestCase
         $this->assertFalse(
             Loader::removeNamespace('Demo')
         );
+    }
+
+    protected function setUp(): void
+    {
+        Loader::register();
+    }
+
+    protected function tearDown(): void
+    {
+        Loader::clear();
+        Loader::unregister();
     }
 }

@@ -23,11 +23,14 @@ use const DIRECTORY_SEPARATOR;
 abstract class Loader
 {
     protected static array $classMap = [];
+
     protected static array $namespaces = [];
+
     protected static bool $registered = false;
 
     /**
      * Add a class map.
+     *
      * @param array $classMap The class map.
      */
     public static function addClassMap(array $classMap): void
@@ -42,6 +45,7 @@ abstract class Loader
 
     /**
      * Add namespaces.
+     *
      * @param array $namespaces The namespaces.
      */
     public static function addNamespaces(array $namespaces): void
@@ -76,6 +80,7 @@ abstract class Loader
 
     /**
      * Get the class map.
+     *
      * @return array The class map.
      */
     public static function getClassMap(): array
@@ -85,6 +90,7 @@ abstract class Loader
 
     /**
      * Get a namespace.
+     *
      * @param string $prefix The namespace prefix.
      * @return array The namespace paths.
      */
@@ -97,6 +103,7 @@ abstract class Loader
 
     /**
      * Get all paths for a namespace.
+     *
      * @param string $prefix The namespace prefix.
      * @return array The namespace paths.
      */
@@ -136,6 +143,7 @@ abstract class Loader
 
     /**
      * Get the namespaces.
+     *
      * @return array The namespaces.
      */
     public static function getNamespaces(): array
@@ -145,6 +153,7 @@ abstract class Loader
 
     /**
      * Determine if a namespace exists.
+     *
      * @param string $prefix The namespace prefix.
      * @return bool TRUE if the namespace exists, otherwise FALSE.
      */
@@ -157,6 +166,7 @@ abstract class Loader
 
     /**
      * Load composer.
+     *
      * @param string $composerPath The composer autload path.
      */
     public static function loadComposer(string $composerPath): void
@@ -190,6 +200,7 @@ abstract class Loader
 
     /**
      * Remove a class name.
+     *
      * @param string $className The class name.
      * @return bool TRUE if the class was removed, otherwise FALSE.
      */
@@ -208,6 +219,7 @@ abstract class Loader
 
     /**
      * Remove a namespace.
+     *
      * @param string $prefix The namespace prefix.
      * @return bool TRUE If the namespace was removed, otherwise FALSE.
      */
@@ -240,6 +252,7 @@ abstract class Loader
 
     /**
      * Attempt to load a class.
+     *
      * @param string $class The class name.
      * @return string|bool The file name, or FALSE if the class could not be loaded.
      */
@@ -273,6 +286,7 @@ abstract class Loader
 
     /**
      * Attempt to load a class from the class map.
+     *
      * @param string $class The class name.
      * @return string|bool The file name, or FALSE if the class could not be loaded.
      */
@@ -287,6 +301,7 @@ abstract class Loader
 
     /**
      * Attempt to load a file.
+     *
      * @param string $filePath The file path.
      * @return string|bool The file path, or FALSE if the file co uld not be loaded.
      */
@@ -303,6 +318,7 @@ abstract class Loader
 
     /**
      * Normalize a class name
+     *
      * @param string $className The class name.
      * @return string The normalized class name.
      */
@@ -313,6 +329,7 @@ abstract class Loader
 
     /**
      * Normalize a namespace
+     *
      * @param string $namespace The namespace.
      * @return string The normalized namespace.
      */
