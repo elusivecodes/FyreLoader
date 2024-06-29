@@ -254,7 +254,7 @@ abstract class Loader
      * Attempt to load a class.
      *
      * @param string $class The class name.
-     * @return string|bool The file name, or FALSE if the class could not be loaded.
+     * @return bool|string The file name, or FALSE if the class could not be loaded.
      */
     protected static function loadClass(string $class): bool|string
     {
@@ -288,7 +288,7 @@ abstract class Loader
      * Attempt to load a class from the class map.
      *
      * @param string $class The class name.
-     * @return string|bool The file name, or FALSE if the class could not be loaded.
+     * @return bool|string The file name, or FALSE if the class could not be loaded.
      */
     protected static function loadClassFromMap(string $class): bool|string
     {
@@ -303,7 +303,7 @@ abstract class Loader
      * Attempt to load a file.
      *
      * @param string $filePath The file path.
-     * @return string|bool The file path, or FALSE if the file co uld not be loaded.
+     * @return bool|string The file path, or FALSE if the file co uld not be loaded.
      */
     protected static function loadFile(string $filePath): bool|string
     {
