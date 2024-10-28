@@ -34,8 +34,9 @@ class Loader
      * Add a class map.
      *
      * @param array $classMap The class map.
+     * @return static The Loader.
      */
-    public function addClassMap(array $classMap): void
+    public function addClassMap(array $classMap): static
     {
         foreach ($classMap as $className => $path) {
             $className = static::normalizeClass($className);
@@ -43,14 +44,17 @@ class Loader
 
             $this->classMap[$className] = $path;
         }
+
+        return $this;
     }
 
     /**
      * Add namespaces.
      *
      * @param array $namespaces The namespaces.
+     * @return static The Loader.
      */
-    public function addNamespaces(array $namespaces): void
+    public function addNamespaces(array $namespaces): static
     {
         foreach ($namespaces as $prefix => $paths) {
             $prefix = static::normalizeNamespace($prefix);
@@ -73,6 +77,8 @@ class Loader
                 $this->namespaces[$prefix][] = $path;
             }
         }
+
+        return $this;
     }
 
     /**
@@ -174,86 +180,83 @@ class Loader
      * Load composer.
      *
      * @param string $composerPath The composer autload path.
+     * @return static The Loader.
      */
-    public function loadComposer(string $composerPath): void
+    public function loadComposer(string $composerPath): static
     {
-        if (!is_file($composerPath)) {
-            return;
+        if (is_file($composerPath)) {
+            $composer = include_once $composerPath;
+
+            $classMap = $composer->getClassMap();
+            $namespaces = $composer->getPrefixesPsr4();
+
+            $this->addClassMap($classMap);
+            $this->addNamespaces($namespaces);
         }
 
-        $composer = include_once $composerPath;
-
-        $classMap = $composer->getClassMap();
-        $namespaces = $composer->getPrefixesPsr4();
-
-        $this->addClassMap($classMap);
-        $this->addNamespaces($namespaces);
+        return $this;
     }
 
     /**
      * Register the autoloader.
+     *
+     * @return static The Loader.
      */
-    public function register(): void
+    public function register(): static
     {
-        if ($this->loader) {
-            return;
+        if (!$this->loader) {
+            $this->loader = fn(string $class): bool|string => $this->loadClass($class);
+
+            spl_autoload_register($this->loader, true, true);
         }
 
-        $this->loader = fn(string $class): bool|string => $this->loadClass($class);
-
-        spl_autoload_register($this->loader, true, true);
+        return $this;
     }
 
     /**
      * Remove a class name.
      *
      * @param string $className The class name.
-     * @return bool TRUE if the class was removed, otherwise FALSE.
+     * @return static The Loader.
      */
-    public function removeClass(string $className): bool
+    public function removeClass(string $className): static
     {
         $className = static::normalizeClass($className);
 
-        if (!array_key_exists($className, $this->classMap)) {
-            return false;
-        }
-
         unset($this->classMap[$className]);
 
-        return true;
+        return $this;
     }
 
     /**
      * Remove a namespace.
      *
      * @param string $prefix The namespace prefix.
-     * @return bool TRUE If the namespace was removed, otherwise FALSE.
+     * @return static The Loader.
      */
-    public function removeNamespace(string $prefix): bool
+    public function removeNamespace(string $prefix): static
     {
         $prefix = static::normalizeNamespace($prefix);
 
-        if (!array_key_exists($prefix, $this->namespaces)) {
-            return false;
-        }
-
         unset($this->namespaces[$prefix]);
 
-        return true;
+        return $this;
     }
 
     /**
      * Unregister the autoloader.
+     *
+     * @return static The Loader.
      */
-    public function unregister(): void
+    public function unregister(): static
     {
-        if (!$this->loader) {
-            return;
+        if ($this->loader) {
+            spl_autoload_unregister($this->loader);
+
+            $this->loader = null;
         }
 
-        spl_autoload_unregister($this->loader);
-
-        $this->loader = null;
+        return $this;
     }
 
     /**

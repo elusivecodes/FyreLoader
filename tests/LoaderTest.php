@@ -13,9 +13,12 @@ final class LoaderTest extends TestCase
 
     public function testClassMap(): void
     {
-        $this->loader->addClassMap([
-            'TestClass' => 'tests/classes/TestClass.php',
-        ]);
+        $this->assertSame(
+            $this->loader,
+            $this->loader->addClassMap([
+                'TestClass' => 'tests/classes/TestClass.php',
+            ])
+        );
 
         $this->assertTrue(
             \TestClass::test()
@@ -40,10 +43,13 @@ final class LoaderTest extends TestCase
 
     public function testGetNamespace(): void
     {
-        $this->loader->addNamespaces([
-            'Test' => 'tests/',
-            'Demo' => 'tests/classes/Demo',
-        ]);
+        $this->assertSame(
+            $this->loader,
+            $this->loader->addNamespaces([
+                'Test' => 'tests/',
+                'Demo' => 'tests/classes/Demo',
+            ])
+        );
 
         $this->assertSame(
             [
@@ -185,7 +191,8 @@ final class LoaderTest extends TestCase
             'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
-        $this->assertTrue(
+        $this->assertSame(
+            $this->loader,
             $this->loader->removeClass('Test\Example')
         );
 
@@ -199,7 +206,8 @@ final class LoaderTest extends TestCase
 
     public function testRemoveClassInvalid(): void
     {
-        $this->assertFalse(
+        $this->assertSame(
+            $this->loader,
             $this->loader->removeClass('Test')
         );
     }
@@ -210,7 +218,8 @@ final class LoaderTest extends TestCase
             'Demo' => 'tests/classes/Demo',
         ]);
 
-        $this->assertTrue(
+        $this->assertSame(
+            $this->loader,
             $this->loader->removeNamespace('Demo')
         );
 
@@ -221,7 +230,8 @@ final class LoaderTest extends TestCase
 
     public function testRemoveNamespaceInvalid(): void
     {
-        $this->assertFalse(
+        $this->assertSame(
+            $this->loader,
             $this->loader->removeNamespace('Demo')
         );
     }
@@ -229,11 +239,18 @@ final class LoaderTest extends TestCase
     protected function setUp(): void
     {
         $this->loader = new Loader();
-        $this->loader->register();
+
+        $this->assertSame(
+            $this->loader,
+            $this->loader->register()
+        );
     }
 
     protected function tearDown(): void
     {
-        $this->loader->unregister();
+        $this->assertSame(
+            $this->loader,
+            $this->loader->unregister()
+        );
     }
 }
