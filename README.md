@@ -133,7 +133,7 @@ Remove a class.
 - `$className` is a string representing the class name.
 
 ```php
-$removed = $loader->removeClass($className);
+$loader->removeClass($className);
 ```
 
 **Remove Namespace**
@@ -143,7 +143,7 @@ Remove a namespace.
 - `$prefix` is a string representing the namespace prefix.
 
 ```php
-$removed = $loader->removeNamespace($prefix);
+$loader->removeNamespace($prefix);
 ```
 
 **Unregister**
