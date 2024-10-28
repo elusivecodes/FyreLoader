@@ -5,7 +5,8 @@
 
 ## Table Of Contents
 - [Installation](#installation)
-- [Methods](#methods)
+- [Loader Creation](#loader-creation)
+- [Loader Methods](#loader-methods)
 
 
 
@@ -24,7 +25,14 @@ use Fyre\Loader\Loader;
 ```
 
 
-## Methods
+## Loader Creation
+
+```php
+$loader = new Loader();
+```
+
+
+## Loader Methods
 
 **Add Class Map**
 
@@ -33,7 +41,7 @@ Add a class map.
 - `$classMap` is an array containing the class map.
 
 ```php
-Loader::addClassMap($classMap);
+$loader->addClassMap($classMap);
 ```
 
 **Add Namespaces**
@@ -43,7 +51,7 @@ Add namespaces.
 - `$namespaces` is an array containing the namespaces where the key is the namespace prefix and the value is the path.
 
 ```php
-Loader::addNamespaces($namespaces);
+$loader->addNamespaces($namespaces);
 ```
 
 **Clear**
@@ -51,7 +59,7 @@ Loader::addNamespaces($namespaces);
 Clear the auto loader.
 
 ```php
-Loader::clear();
+$loader->clear();
 ```
 
 **Get Class Map**
@@ -59,7 +67,7 @@ Loader::clear();
 Get the class map.
 
 ```php
-$classMap = Loader::getClassMap();
+$classMap = $loader->getClassMap();
 ```
 
 **Get Namespace**
@@ -69,7 +77,7 @@ Get a namespace.
 - `$prefix` is a string representing the namespace prefix.
 
 ```php
-$paths = Loader::getNamespace($prefix);
+$paths = $loader->getNamespace($prefix);
 ```
 
 **Get Namespace Paths**
@@ -79,7 +87,7 @@ Get all paths for a namespace.
 - `$prefix` is a string representing the namespace prefix.
 
 ```php
-$paths = Loader::getNamespacePaths($prefix);
+$paths = $loader->getNamespacePaths($prefix);
 ```
 
 **Get Namespaces**
@@ -87,7 +95,7 @@ $paths = Loader::getNamespacePaths($prefix);
 Get the namespaces.
 
 ```php
-$namespaces = Loader::getNamespaces();
+$namespaces = $loader->getNamespaces();
 ```
 
 **Has Namespace**
@@ -97,7 +105,7 @@ Check if a namespace exists.
 - `$prefix` is a string representing the namespace prefix.
 
 ```php
-$hasNamespace = Loader::hasNamespace($prefix);
+$hasNamespace = $loader->hasNamespace($prefix);
 ```
 
 **Load Composer**
@@ -107,7 +115,7 @@ Load composer.
 - `$composerPath` is a string representing the composer autoload path.
 
 ```php
-Loader::loadComposer($composerPath);
+$loader->loadComposer($composerPath);
 ```
 
 **Register**
@@ -115,7 +123,7 @@ Loader::loadComposer($composerPath);
 Register the autoloader.
 
 ```php
-Loader::register();
+$loader->register();
 ```
 
 **Remove Class**
@@ -125,7 +133,7 @@ Remove a class.
 - `$className` is a string representing the class name.
 
 ```php
-$removed = Loader::removeClass($className);
+$removed = $loader->removeClass($className);
 ```
 
 **Remove Namespace**
@@ -135,7 +143,7 @@ Remove a namespace.
 - `$prefix` is a string representing the namespace prefix.
 
 ```php
-$removed = Loader::removeNamespace($prefix);
+$removed = $loader->removeNamespace($prefix);
 ```
 
 **Unregister**
@@ -143,5 +151,5 @@ $removed = Loader::removeNamespace($prefix);
 Unregister the autoloader.
 
 ```php
-Loader::unregister();
+$loader->unregister();
 ```

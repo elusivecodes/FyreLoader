@@ -3,11 +3,13 @@ declare(strict_types=1);
 
 namespace Fyre\Loader;
 
+use Closure;
 use Fyre\Utility\Path;
 
 use function array_key_exists;
 use function in_array;
 use function is_file;
+use function rtrim;
 use function spl_autoload_register;
 use function str_replace;
 use function str_starts_with;
@@ -20,26 +22,26 @@ use const DIRECTORY_SEPARATOR;
 /**
  * Loader
  */
-abstract class Loader
+class Loader
 {
-    protected static array $classMap = [];
+    protected array $classMap = [];
 
-    protected static array $namespaces = [];
+    protected Closure|null $loader = null;
 
-    protected static bool $registered = false;
+    protected array $namespaces = [];
 
     /**
      * Add a class map.
      *
      * @param array $classMap The class map.
      */
-    public static function addClassMap(array $classMap): void
+    public function addClassMap(array $classMap): void
     {
         foreach ($classMap as $className => $path) {
             $className = static::normalizeClass($className);
             $path = Path::resolve($path);
 
-            static::$classMap[$className] = $path;
+            $this->classMap[$className] = $path;
         }
     }
 
@@ -48,23 +50,27 @@ abstract class Loader
      *
      * @param array $namespaces The namespaces.
      */
-    public static function addNamespaces(array $namespaces): void
+    public function addNamespaces(array $namespaces): void
     {
         foreach ($namespaces as $prefix => $paths) {
             $prefix = static::normalizeNamespace($prefix);
 
-            static::$namespaces[$prefix] ??= [];
+            $this->namespaces[$prefix] ??= [];
 
             $paths = (array) $paths;
 
             foreach ($paths as $path) {
                 $path = Path::resolve($path);
 
-                if (in_array($path, static::$namespaces[$prefix])) {
+                if ($path !== DIRECTORY_SEPARATOR) {
+                    $path = rtrim($path, DIRECTORY_SEPARATOR);
+                }
+
+                if (in_array($path, $this->namespaces[$prefix])) {
                     continue;
                 }
 
-                static::$namespaces[$prefix][] = $path;
+                $this->namespaces[$prefix][] = $path;
             }
         }
     }
@@ -72,10 +78,10 @@ abstract class Loader
     /**
      * Clear the auto loader.
      */
-    public static function clear(): void
+    public function clear(): void
     {
-        static::$namespaces = [];
-        static::$classMap = [];
+        $this->namespaces = [];
+        $this->classMap = [];
     }
 
     /**
@@ -83,9 +89,9 @@ abstract class Loader
      *
      * @return array The class map.
      */
-    public static function getClassMap(): array
+    public function getClassMap(): array
     {
-        return static::$classMap;
+        return $this->classMap;
     }
 
     /**
@@ -94,11 +100,11 @@ abstract class Loader
      * @param string $prefix The namespace prefix.
      * @return array The namespace paths.
      */
-    public static function getNamespace(string $prefix): array
+    public function getNamespace(string $prefix): array
     {
         $prefix = static::normalizeNamespace($prefix);
 
-        return static::$namespaces[$prefix] ?? [];
+        return $this->namespaces[$prefix] ?? [];
     }
 
     /**
@@ -107,14 +113,14 @@ abstract class Loader
      * @param string $prefix The namespace prefix.
      * @return array The namespace paths.
      */
-    public static function getNamespacePaths(string $prefix): array
+    public function getNamespacePaths(string $prefix): array
     {
         $prefix = static::normalizeNamespace($prefix);
         $prefixLength = strlen($prefix);
 
-        $paths = static::$namespaces[$prefix] ?? [];
+        $paths = $this->namespaces[$prefix] ?? [];
 
-        foreach (static::$classMap as $className => $filePath) {
+        foreach ($this->classMap as $className => $filePath) {
             if (!str_starts_with($className, $prefix)) {
                 continue;
             }
@@ -129,7 +135,7 @@ abstract class Loader
             }
 
             $testPathLength = strlen($testPath);
-            $path = substr($filePath, 0, -$testPathLength);
+            $path = substr($filePath, 0, -$testPathLength) ?: DIRECTORY_SEPARATOR;
 
             if (in_array($path, $paths)) {
                 continue;
@@ -146,9 +152,9 @@ abstract class Loader
      *
      * @return array The namespaces.
      */
-    public static function getNamespaces(): array
+    public function getNamespaces(): array
     {
-        return static::$namespaces;
+        return $this->namespaces;
     }
 
     /**
@@ -157,11 +163,11 @@ abstract class Loader
      * @param string $prefix The namespace prefix.
      * @return bool TRUE if the namespace exists, otherwise FALSE.
      */
-    public static function hasNamespace(string $prefix): bool
+    public function hasNamespace(string $prefix): bool
     {
         $prefix = static::normalizeNamespace($prefix);
 
-        return array_key_exists($prefix, static::$namespaces);
+        return array_key_exists($prefix, $this->namespaces);
     }
 
     /**
@@ -169,7 +175,7 @@ abstract class Loader
      *
      * @param string $composerPath The composer autload path.
      */
-    public static function loadComposer(string $composerPath): void
+    public function loadComposer(string $composerPath): void
     {
         if (!is_file($composerPath)) {
             return;
@@ -180,22 +186,22 @@ abstract class Loader
         $classMap = $composer->getClassMap();
         $namespaces = $composer->getPrefixesPsr4();
 
-        static::addClassMap($classMap);
-        static::addNamespaces($namespaces);
+        $this->addClassMap($classMap);
+        $this->addNamespaces($namespaces);
     }
 
     /**
      * Register the autoloader.
      */
-    public static function register(): void
+    public function register(): void
     {
-        if (static::$registered) {
+        if ($this->loader) {
             return;
         }
 
-        spl_autoload_register([static::class, 'loadClass'], true, true);
+        $this->loader = fn(string $class): bool|string => $this->loadClass($class);
 
-        static::$registered = true;
+        spl_autoload_register($this->loader, true, true);
     }
 
     /**
@@ -204,15 +210,15 @@ abstract class Loader
      * @param string $className The class name.
      * @return bool TRUE if the class was removed, otherwise FALSE.
      */
-    public static function removeClass(string $className): bool
+    public function removeClass(string $className): bool
     {
         $className = static::normalizeClass($className);
 
-        if (!array_key_exists($className, static::$classMap)) {
+        if (!array_key_exists($className, $this->classMap)) {
             return false;
         }
 
-        unset(static::$classMap[$className]);
+        unset($this->classMap[$className]);
 
         return true;
     }
@@ -223,15 +229,15 @@ abstract class Loader
      * @param string $prefix The namespace prefix.
      * @return bool TRUE If the namespace was removed, otherwise FALSE.
      */
-    public static function removeNamespace(string $prefix): bool
+    public function removeNamespace(string $prefix): bool
     {
         $prefix = static::normalizeNamespace($prefix);
 
-        if (!array_key_exists($prefix, static::$namespaces)) {
+        if (!array_key_exists($prefix, $this->namespaces)) {
             return false;
         }
 
-        unset(static::$namespaces[$prefix]);
+        unset($this->namespaces[$prefix]);
 
         return true;
     }
@@ -239,15 +245,15 @@ abstract class Loader
     /**
      * Unregister the autoloader.
      */
-    public static function unregister(): void
+    public function unregister(): void
     {
-        if (!static::$registered) {
+        if (!$this->loader) {
             return;
         }
 
-        spl_autoload_unregister([static::class, 'loadClass']);
+        spl_autoload_unregister($this->loader);
 
-        static::$registered = false;
+        $this->loader = null;
     }
 
     /**
@@ -256,13 +262,13 @@ abstract class Loader
      * @param string $class The class name.
      * @return bool|string The file name, or FALSE if the class could not be loaded.
      */
-    protected static function loadClass(string $class): bool|string
+    protected function loadClass(string $class): bool|string
     {
-        if (static::loadClassFromMap($class)) {
+        if ($this->loadClassFromMap($class)) {
             return true;
         }
 
-        foreach (static::$namespaces as $prefix => $paths) {
+        foreach ($this->namespaces as $prefix => $paths) {
             if (!str_starts_with($class, $prefix)) {
                 continue;
             }
@@ -290,13 +296,13 @@ abstract class Loader
      * @param string $class The class name.
      * @return bool|string The file name, or FALSE if the class could not be loaded.
      */
-    protected static function loadClassFromMap(string $class): bool|string
+    protected function loadClassFromMap(string $class): bool|string
     {
-        if (!array_key_exists($class, static::$classMap)) {
+        if (!array_key_exists($class, $this->classMap)) {
             return false;
         }
 
-        return static::loadFile(static::$classMap[$class]);
+        return static::loadFile($this->classMap[$class]);
     }
 
     /**

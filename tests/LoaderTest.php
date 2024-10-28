@@ -9,9 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 final class LoaderTest extends TestCase
 {
+    protected Loader $loader;
+
     public function testClassMap(): void
     {
-        Loader::addClassMap([
+        $this->loader->addClassMap([
             'TestClass' => 'tests/classes/TestClass.php',
         ]);
 
@@ -22,7 +24,7 @@ final class LoaderTest extends TestCase
 
     public function testGetClassMap(): void
     {
-        Loader::addClassMap([
+        $this->loader->addClassMap([
             'Test\Example' => 'other/classes/Example.php',
             'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
@@ -32,13 +34,13 @@ final class LoaderTest extends TestCase
                 'Test\Example' => Path::resolve('other/classes/Example.php'),
                 'Test\Deep\Another' => Path::resolve('files/Deep/Another.php'),
             ],
-            Loader::getClassMap()
+            $this->loader->getClassMap()
         );
     }
 
     public function testGetNamespace(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Test' => 'tests/',
             'Demo' => 'tests/classes/Demo',
         ]);
@@ -47,7 +49,7 @@ final class LoaderTest extends TestCase
             [
                 Path::resolve('tests/classes/Demo'),
             ],
-            Loader::getNamespace('Demo')
+            $this->loader->getNamespace('Demo')
         );
     }
 
@@ -55,18 +57,18 @@ final class LoaderTest extends TestCase
     {
         $this->assertSame(
             [],
-            Loader::getNamespace('Demo')
+            $this->loader->getNamespace('Demo')
         );
     }
 
     public function testGetNamespacePaths(): void
     {
-        Loader::addClassMap([
+        $this->loader->addClassMap([
             'Test\Example' => 'other/classes/Example.php',
             'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Test' => 'tests/',
         ]);
 
@@ -76,13 +78,13 @@ final class LoaderTest extends TestCase
                 Path::resolve('other/classes'),
                 Path::resolve('files'),
             ],
-            Loader::getNamespacePaths('Test')
+            $this->loader->getNamespacePaths('Test')
         );
     }
 
     public function testGetNamespaces(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Test' => 'tests/',
             'Demo' => 'tests/classes/Demo',
         ]);
@@ -96,43 +98,43 @@ final class LoaderTest extends TestCase
                     Path::resolve('tests/classes/Demo'),
                 ],
             ],
-            Loader::getNamespaces()
+            $this->loader->getNamespaces()
         );
     }
 
     public function testHasNamespace(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
-            Loader::hasNamespace('Demo')
+            $this->loader->hasNamespace('Demo')
         );
     }
 
     public function testHasNamespaceInvalid(): void
     {
         $this->assertFalse(
-            Loader::hasNamespace('Demo')
+            $this->loader->hasNamespace('Demo')
         );
     }
 
     public function testLoadComposer(): void
     {
-        Loader::loadComposer('tests/Mock/autoload.php');
+        $this->loader->loadComposer('tests/Mock/autoload.php');
 
         $this->assertSame(
             [
                 Path::resolve('src'),
             ],
-            Loader::getNamespace('Fyre')
+            $this->loader->getNamespace('Fyre')
         );
     }
 
     public function testNamespace(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => 'tests/classes/Demo',
         ]);
 
@@ -143,7 +145,7 @@ final class LoaderTest extends TestCase
 
     public function testNamespaceArray(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => [
                 'tests/classes/Demo',
             ],
@@ -156,7 +158,7 @@ final class LoaderTest extends TestCase
 
     public function testNamespaceDeep(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => 'tests/classes/Demo',
         ]);
 
@@ -167,7 +169,7 @@ final class LoaderTest extends TestCase
 
     public function testNamespaceTrailingSlash(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => 'tests/classes/Demo/',
         ]);
 
@@ -178,60 +180,60 @@ final class LoaderTest extends TestCase
 
     public function testRemoveClass(): void
     {
-        Loader::addClassMap([
+        $this->loader->addClassMap([
             'Test\Example' => 'other/classes/Example.php',
             'Test\Deep\Another' => 'files/Deep/Another.php',
         ]);
 
         $this->assertTrue(
-            Loader::removeClass('Test\Example')
+            $this->loader->removeClass('Test\Example')
         );
 
         $this->assertSame(
             [
                 'Test\Deep\Another' => Path::resolve('files/Deep/Another.php'),
             ],
-            Loader::getClassMap()
+            $this->loader->getClassMap()
         );
     }
 
     public function testRemoveClassInvalid(): void
     {
         $this->assertFalse(
-            Loader::removeClass('Test')
+            $this->loader->removeClass('Test')
         );
     }
 
     public function testRemoveNamespace(): void
     {
-        Loader::addNamespaces([
+        $this->loader->addNamespaces([
             'Demo' => 'tests/classes/Demo',
         ]);
 
         $this->assertTrue(
-            Loader::removeNamespace('Demo')
+            $this->loader->removeNamespace('Demo')
         );
 
         $this->assertFalse(
-            Loader::hasNamespace('Demo')
+            $this->loader->hasNamespace('Demo')
         );
     }
 
     public function testRemoveNamespaceInvalid(): void
     {
         $this->assertFalse(
-            Loader::removeNamespace('Demo')
+            $this->loader->removeNamespace('Demo')
         );
     }
 
     protected function setUp(): void
     {
-        Loader::register();
+        $this->loader = new Loader();
+        $this->loader->register();
     }
 
     protected function tearDown(): void
     {
-        Loader::clear();
-        Loader::unregister();
+        $this->loader->unregister();
     }
 }
