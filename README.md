@@ -100,7 +100,7 @@ $namespaces = $loader->getNamespaces();
 
 **Has Namespace**
 
-Check if a namespace exists.
+Determine whether a namespace exists.
 
 - `$prefix` is a string representing the namespace prefix.
 

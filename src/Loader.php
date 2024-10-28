@@ -158,7 +158,7 @@ class Loader
     }
 
     /**
-     * Determine if a namespace exists.
+     * Determine whether a namespace exists.
      *
      * @param string $prefix The namespace prefix.
      * @return bool TRUE if the namespace exists, otherwise FALSE.
