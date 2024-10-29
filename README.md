@@ -27,8 +27,12 @@ use Fyre\Loader\Loader;
 
 ## Loader Creation
 
+- `$namespaces` is an array containing the namespaces where the key is the namespace prefix and the value is the path, and will default to *[]*.
+- `$classMap` is an array containing the class map, and will default to *[]*.
+- `$register` is a boolean indicating whether to autoload the *Loader*, and will default to *true*.
+
 ```php
-$loader = new Loader();
+$loader = new Loader($namespaces, $classMap, $register);
 ```
 
 

@@ -239,18 +239,10 @@ final class LoaderTest extends TestCase
     protected function setUp(): void
     {
         $this->loader = new Loader();
-
-        $this->assertSame(
-            $this->loader,
-            $this->loader->register()
-        );
     }
 
     protected function tearDown(): void
     {
-        $this->assertSame(
-            $this->loader,
-            $this->loader->unregister()
-        );
+        $this->loader->unregister();
     }
 }

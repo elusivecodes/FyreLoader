@@ -31,6 +31,23 @@ class Loader
     protected array $namespaces = [];
 
     /**
+     * New Loader constructor.
+     *
+     * @param array $namespaces The namespaces.
+     * @param array $classMap The class map.
+     * @param bool $register Whether to register the loader.
+     */
+    public function __construct(array $namespaces = [], array $classMap = [], bool $register = true)
+    {
+        $this->addNamespaces($namespaces);
+        $this->addClassMap($classMap);
+
+        if ($register) {
+            $this->register();
+        }
+    }
+
+    /**
      * Add a class map.
      *
      * @param array $classMap The class map.
@@ -205,7 +222,7 @@ class Loader
     public function register(): static
     {
         if (!$this->loader) {
-            $this->loader = fn(string $class): bool|string => $this->loadClass($class);
+            $this->loader = [$this, 'loadClass'](...);
 
             spl_autoload_register($this->loader, true, true);
         }
