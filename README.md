@@ -5,8 +5,8 @@
 
 ## Table Of Contents
 - [Installation](#installation)
-- [Loader Creation](#loader-creation)
-- [Loader Methods](#loader-methods)
+- [Basic Usage](#basic-usage)
+- [Methods](#methods)
 
 
 
@@ -25,7 +25,7 @@ use Fyre\Loader\Loader;
 ```
 
 
-## Loader Creation
+## Basic Usage
 
 - `$namespaces` is an array containing the namespaces where the key is the namespace prefix and the value is the path, and will default to *[]*.
 - `$classMap` is an array containing the class map, and will default to *[]*.
@@ -36,7 +36,7 @@ $loader = new Loader($namespaces, $classMap, $register);
 ```
 
 
-## Loader Methods
+## Methods
 
 **Add Class Map**
 
