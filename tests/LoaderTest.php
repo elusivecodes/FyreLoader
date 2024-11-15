@@ -239,6 +239,7 @@ final class LoaderTest extends TestCase
     protected function setUp(): void
     {
         $this->loader = new Loader();
+        $this->loader->register();
     }
 
     protected function tearDown(): void

@@ -27,12 +27,16 @@ use Fyre\Loader\Loader;
 
 ## Basic Usage
 
-- `$namespaces` is an array containing the namespaces where the key is the namespace prefix and the value is the path, and will default to *[]*.
-- `$classMap` is an array containing the class map, and will default to *[]*.
-- `$register` is a boolean indicating whether to autoload the *Loader*, and will default to *true*.
+```php
+$loader = new Loader();
+```
+
+**Autoloading**
+
+It is recommended to bind the *Loader* to the [*Container*](https://github.com/elusivecodes/FyreContainer) as a singleton.
 
 ```php
-$loader = new Loader($namespaces, $classMap, $register);
+$container->singleton(Loader::class);
 ```
 
 

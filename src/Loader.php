@@ -31,23 +31,6 @@ class Loader
     protected array $namespaces = [];
 
     /**
-     * New Loader constructor.
-     *
-     * @param array $namespaces The namespaces.
-     * @param array $classMap The class map.
-     * @param bool $register Whether to register the loader.
-     */
-    public function __construct(array $namespaces = [], array $classMap = [], bool $register = true)
-    {
-        $this->addNamespaces($namespaces);
-        $this->addClassMap($classMap);
-
-        if ($register) {
-            $this->register();
-        }
-    }
-
-    /**
      * Add a class map.
      *
      * @param array $classMap The class map.
