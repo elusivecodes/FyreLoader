@@ -4,8 +4,50 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2641d22e10acaa9f0ea4ee910d28669f",
+    "content-hash": "ffd916ec0949c81303155e9647dc8e80",
     "packages": [
+        {
+            "name": "fyre/macro",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/elusivecodes/FyreMacro.git",
+                "reference": "03300e92f2ff000f24b6dd292fac25d8f85b0a3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/elusivecodes/FyreMacro/zipball/03300e92f2ff000f24b6dd292fac25d8f85b0a3e",
+                "reference": "03300e92f2ff000f24b6dd292fac25d8f85b0a3e",
+                "shasum": ""
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.59",
+                "fyre/php-cs-fixer-config": "^1.0",
+                "phpunit/phpunit": "^12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fyre\\Utility\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "elusivecodes",
+                    "email": "elusivecodes@gmail.com"
+                }
+            ],
+            "description": "A macro utility library.",
+            "support": {
+                "issues": "https://github.com/elusivecodes/FyreMacro/issues",
+                "source": "https://github.com/elusivecodes/FyreMacro/tree/v1.0"
+            },
+            "time": "2025-07-27T11:31:34+00:00"
+        },
         {
             "name": "fyre/path",
             "version": "v2.0.15",

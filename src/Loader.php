@@ -5,6 +5,7 @@ namespace Fyre\Loader;
 
 use Closure;
 use Fyre\Utility\Path;
+use Fyre\Utility\Traits\MacroTrait;
 
 use function array_key_exists;
 use function in_array;
@@ -24,6 +25,8 @@ use const DIRECTORY_SEPARATOR;
  */
 class Loader
 {
+    use MacroTrait;
+
     protected array $classMap = [];
 
     protected Closure|null $loader = null;
