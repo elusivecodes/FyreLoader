@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9754b9e87b2b316781c1321ed8897aea",
+    "content-hash": "dcae895fdf8e8071795a8d5d6bce7e61",
     "packages": [
         {
             "name": "fyre/macro",
@@ -50,17 +50,20 @@
         },
         {
             "name": "fyre/path",
-            "version": "v2.0.15",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elusivecodes/FyrePath.git",
-                "reference": "09055cf0e8e836fed8c4a5b84ec0d0a083cd8c86"
+                "reference": "d252569dd479a29ab8168e2dd6fe26492204423a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elusivecodes/FyrePath/zipball/09055cf0e8e836fed8c4a5b84ec0d0a083cd8c86",
-                "reference": "09055cf0e8e836fed8c4a5b84ec0d0a083cd8c86",
+                "url": "https://api.github.com/repos/elusivecodes/FyrePath/zipball/d252569dd479a29ab8168e2dd6fe26492204423a",
+                "reference": "d252569dd479a29ab8168e2dd6fe26492204423a",
                 "shasum": ""
+            },
+            "require": {
+                "fyre/macro": "^2.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.59",
@@ -86,9 +89,9 @@
             "description": "A path utility library.",
             "support": {
                 "issues": "https://github.com/elusivecodes/FyrePath/issues",
-                "source": "https://github.com/elusivecodes/FyrePath/tree/v2.0.15"
+                "source": "https://github.com/elusivecodes/FyrePath/tree/v3.0.1"
             },
-            "time": "2025-07-27T11:05:13+00:00"
+            "time": "2025-10-22T11:57:47+00:00"
         }
     ],
     "packages-dev": [
@@ -488,16 +491,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.89.0",
+            "version": "v3.89.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "4dd6768cb7558440d27d18f54909eee417317ce9"
+                "reference": "f34967da2866ace090a2b447de1f357356474573"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/4dd6768cb7558440d27d18f54909eee417317ce9",
-                "reference": "4dd6768cb7558440d27d18f54909eee417317ce9",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/f34967da2866ace090a2b447de1f357356474573",
+                "reference": "f34967da2866ace090a2b447de1f357356474573",
                 "shasum": ""
             },
             "require": {
@@ -579,7 +582,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.89.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.89.1"
             },
             "funding": [
                 {
@@ -587,7 +590,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-18T19:30:16+00:00"
+            "time": "2025-10-24T12:05:10+00:00"
         },
         {
             "name": "fyre/php-cs-fixer-config",
